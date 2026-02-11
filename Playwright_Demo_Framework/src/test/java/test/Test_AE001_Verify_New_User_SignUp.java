@@ -1,7 +1,9 @@
 package test;
 
+import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.microsoft.playwright.Page;
@@ -39,10 +41,65 @@ public class Test_AE001_Verify_New_User_SignUp extends Basetest{
 		//PlaywrightAssertions.assertThat(page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName(Pattern.compile("Signup")))).hasText(expectedheader);
 	
 		//Step-3 Enter sign-up details and submit the form
-		page.locator("//input[@placeholder='Name']").fill("Test User");
-		page.locator("//input[@placeholder='Name']").fill("Test User");
-		page.locator("//input[@placeholder='Name']").click();
-	
+		System.out.println("Running:Step-3");
+		String username = "Autobot_" + System.currentTimeMillis();
+		String email = "Autobot_" + System.currentTimeMillis() + "@cloudyfolk.com";
+		String password = "@Pwd"+ UUID.randomUUID().toString().substring(0, 5);
+		playwright.selectors().setTestIdAttribute("data-qa");
+		page.getByPlaceholder("Name").fill(username);
+		//page.getByPlaceholder("Email Address").fill(email);
+		page.getByPlaceholder("Email Address").nth(1).fill(email);
+		//page.getByTestId("signup-email").click();
+		page.getByTestId("signup-button").click();
+		PlaywrightAssertions.assertThat(page).hasURL(Pattern.compile(".*/signup$"));
+		PlaywrightAssertions.assertThat(page).hasTitle(Pattern.compile("Signup",Pattern.CASE_INSENSITIVE));
+		PlaywrightAssertions.assertThat(page.getByText("Enter Account Information")).isVisible();
+		
+		//Step-4 Enter the Account information
+		System.out.println("Running:Step-4");
+		Assert.assertTrue(page.locator("#name").getAttribute("value").equals(username));
+		Assert.assertTrue(page.locator("#email").getAttribute("value").equals(email));
+		//page.getByLabel(Pattern.compile("^\\s*Mr.\\s*$")).click();
+		page.getByRole(AriaRole.RADIO, new Page.GetByRoleOptions().setName(Pattern.compile("^\\s*Mr.\\s*$"))).click();
+		page.getByTestId("password").fill(password);
+		page.getByTestId("days").selectOption("10");
+		page.getByTestId("months").selectOption("May");
+		page.getByTestId("years").selectOption("1990");
+		page.getByText("Sign up for our newsletter!").click();
+		page.getByText("Receive special offers from our partners!").click();
+		PlaywrightAssertions.assertThat(page.locator("#newsletter")).isChecked();
+		PlaywrightAssertions.assertThat(page.locator("#optin")).isChecked();
+		
+		//Step-5 Enter the Address information
+		System.out.println("Running:Step-5");
+		page.getByTestId("first_name").fill(username);
+		page.getByTestId("last_name").fill("Bot"+System.currentTimeMillis());
+		page.getByTestId("company").fill("CloudyFolk");
+		page.getByTestId("address").fill("House No#33, Indira Nagar");
+		page.getByTestId("address2").fill("Near Velammal School");
+		page.getByTestId("country").selectOption("India");
+		page.getByTestId("state").fill("Tamil Nadu");
+		page.getByTestId("city").fill("Pollachi");
+		page.getByTestId("zipcode").fill("600123");
+		page.getByTestId("mobile_number").fill("90123456789");
+		
+		//Step-6 Click on the 'Create Account' button
+		System.out.println("Running:Step-6");
+		page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("Create Account",Pattern.CASE_INSENSITIVE))).click();
+		PlaywrightAssertions.assertThat(page.getByText(Pattern.compile("Account Created"))).isVisible();
+		PlaywrightAssertions.assertThat(page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName(Pattern.compile("Account Created")))).isVisible();
+		page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName(Pattern.compile("Continue",Pattern.CASE_INSENSITIVE))).click();
+		
+		//Step-7 Verify that the user is logged in and the account name is displayed on the top right corner
+		System.out.println("Running:Step-7");
+		PlaywrightAssertions.assertThat(page.getByText("Logged in as " + username)).isVisible();
+		
+		//Step-8 Click on the 'Delete Account' button and verify that the account is deleted successfully
+		System.out.println("Running:Step-8");
+		page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName(Pattern.compile("Delete Account",Pattern.CASE_INSENSITIVE))).click();
+		PlaywrightAssertions.assertThat(page.getByText(Pattern.compile("Account Deleted"))).isVisible();
+		PlaywrightAssertions.assertThat(page.getByText(Pattern.compile("permanently deleted",Pattern.CASE_INSENSITIVE))).isVisible();
+		page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName(Pattern.compile("Continue",Pattern.CASE_INSENSITIVE))).click();
 	}
 	
 	

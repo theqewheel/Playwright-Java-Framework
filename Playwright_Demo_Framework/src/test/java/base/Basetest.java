@@ -1,5 +1,7 @@
 package base;
 
+import java.util.Arrays;
+
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import com.microsoft.playwright.Browser;
@@ -18,7 +20,11 @@ public class Basetest {
 public void setup() {
 	playwright = Playwright.create();
 	browser = playwright.chromium().launch(
-			new BrowserType.LaunchOptions().setHeadless(false).setChannel("chrome").setSlowMo(1000));
+			new BrowserType.LaunchOptions().setHeadless(false)
+			//.setChannel("chrome")
+			.setSlowMo(1000)
+			.setArgs(Arrays.asList("--start-maximized"))
+			);
 	page = browser.newPage();
 	System.out.println("Browser launched successfully");
 	//page.navigate(baseURL);
