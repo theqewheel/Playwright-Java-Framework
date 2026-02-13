@@ -1,14 +1,6 @@
 package test;
 
-import java.util.UUID;
-import java.util.regex.Pattern;
-
-import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.assertions.PlaywrightAssertions;
-import com.microsoft.playwright.options.AriaRole;
 
 import base.BaseTest;
 import framework.pages.ae.HomePage;
