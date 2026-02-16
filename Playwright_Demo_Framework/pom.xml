@@ -5,7 +5,12 @@
 	<groupId>com.PlaywrightDemoProject</groupId>
 	<artifactId>Playwright_Demo_Framework</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
+	
+	<properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+	
 	<dependencies>
 		<!-- Source:
 		https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->

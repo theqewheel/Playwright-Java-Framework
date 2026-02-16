@@ -20,6 +20,10 @@ public class BaseTest {
 	@BeforeMethod
 	public void setup() {
 		playwright = Playwright.create();
+		
+		//Set the Test-ID attribute
+		playwright.selectors().setTestIdAttribute("data-qa");
+		
 		browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false)
 				// .setChannel("chrome")
 				.setSlowMo(1000).setArgs(Arrays.asList("--start-maximized")));
