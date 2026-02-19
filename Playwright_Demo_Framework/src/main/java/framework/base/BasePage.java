@@ -2,19 +2,25 @@ package framework.base;
 
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+
+import framework.utils.LoggerUtil;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;;
 
 public abstract class BasePage {
 	
 	protected final Page page;
+	protected Logger logger;
 	private final Locator ContinueButton;
 	
 	public BasePage(Page page) {
 		this.page = page;
+		this.logger = LoggerUtil.getLogger(this.getClass());
 		this.ContinueButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName(Pattern.compile("Continue",Pattern.CASE_INSENSITIVE)));
 		
 	}
@@ -39,7 +45,7 @@ public abstract class BasePage {
 		else {assertThat(checkbox).not().isChecked();
 		}
 		
-		System.out.println("Checkbox: '"+checkboxName+"' is set to: "+shouldBeChecked);
+		logger.info("Checkbox: '"+checkboxName+"' is set to: "+shouldBeChecked);
 		
 	}
 	

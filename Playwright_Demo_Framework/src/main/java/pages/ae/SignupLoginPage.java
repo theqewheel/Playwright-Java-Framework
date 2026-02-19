@@ -1,4 +1,4 @@
-package framework.pages.ae;
+package pages.ae;
 
 import java.util.regex.Pattern;
 
@@ -78,7 +78,7 @@ public class SignupLoginPage extends BasePage {
 			assertThat(PageHeaderLogin).containsText(expectedHeader);break;
 			
 		default:
-			System.out.println("Invalid page name: " + pagename);
+			logger.error("Invalid page name: " + pagename);
 		}
 		
 	}

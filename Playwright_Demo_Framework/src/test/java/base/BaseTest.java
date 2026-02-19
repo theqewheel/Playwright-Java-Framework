@@ -1,36 +1,75 @@
 package base;
 
-import java.util.Arrays;
-
+import org.slf4j.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 
+import framework.config.ConfigManager;
+import framework.utils.LoggerUtil;
+
 public class BaseTest {
 	protected Playwright playwright;
 	protected Browser browser;
 	protected Page page;
+	protected Logger logger;
 	protected String baseURL = "https://automationexercise.com/";
 	
 
 	@BeforeMethod
-	public void setup() {
+	@Parameters({"environment"})
+	
+	public void setup(@Optional String envFromXML) {
+		
+		logger = LoggerUtil.getLogger(this.getClass());
+		
 		playwright = Playwright.create();
 		
 		//Set the Test-ID attribute
-		playwright.selectors().setTestIdAttribute("data-qa");
+		playwright.selectors().setTestIdAttribute(ConfigManager.getProperty("test-id"));
 		
-		browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false)
-				// .setChannel("chrome")
-				.setSlowMo(1000).setArgs(Arrays.asList("--start-maximized")));
+		switch (ConfigManager.getProperty("browser").toLowerCase()) {
+			case "chrome":
+				browser = playwright.chromium()
+						.launch(new BrowserType
+								.LaunchOptions()
+								//.setChannel("chrome")
+								.setHeadless(Boolean.parseBoolean(ConfigManager.getProperty("headless")))
+								.setSlowMo(1000));
+				break;
+			case "firefox":	
+				browser = playwright.firefox()
+						.launch(new BrowserType
+								.LaunchOptions()
+								.setHeadless(Boolean.parseBoolean(ConfigManager.getProperty("headless")))
+								.setSlowMo(1000));
+				break;
+			case "webkit":
+				browser = playwright.webkit()
+						.launch(new BrowserType
+								.LaunchOptions()
+								.setChannel("webkit")
+								.setHeadless(Boolean.parseBoolean(ConfigManager.getProperty("headless")))
+								.setSlowMo(1000));
+				break;
+				
+			default:
+				logger.error("Unsupported browser specified in config.properties: " + ConfigManager.getProperty("browser"));
+				logger.info("Supported browsers are: chrome, firefox, webkit");
+				logger.error("Runtime Excepton:",new RuntimeException("Unsupported browser specified in config.properties: " + ConfigManager.getProperty("browser")));
+		}
+		
+		
 		page = browser.newPage();
-		System.out.println("Browser launched successfully");
-		page.navigate(baseURL);
-		System.out.println("Navigated to base URL: " + baseURL);
+		logger.info("Browser launched successfully");
+		page.navigate(ConfigManager.getBaseURL(envFromXML));
+		logger.info("Navigated to base URL: " + baseURL);
 
 	}
 
@@ -40,7 +79,7 @@ public class BaseTest {
 			browser.close();
 		if (playwright != null)
 			playwright.close();
-		System.out.println("This is the teardown method");
+		logger.info("This is the teardown method");
 	}
 
 }

@@ -1,4 +1,4 @@
-package test;
+package samples;
 
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -12,7 +12,7 @@ import com.microsoft.playwright.options.AriaRole;
 
 import base.BaseTest;
 
-public class Test_AE001_Verify_New_User_SignUp extends BaseTest{
+public class Test_Sample_AE001_Verify_New_User_SignUp extends BaseTest{
 	
 	//constants
 	static String app_Base_URL = "https://automationexercise.com/";

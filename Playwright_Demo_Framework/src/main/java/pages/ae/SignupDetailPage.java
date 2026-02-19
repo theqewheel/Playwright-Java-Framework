@@ -1,4 +1,4 @@
-package framework.pages.ae;
+package pages.ae;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
